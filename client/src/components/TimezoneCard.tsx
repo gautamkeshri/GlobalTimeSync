@@ -22,6 +22,9 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
   const dateString = localTime.toFormat("ccc, MMM d");
   const offsetString = localTime.toFormat("ZZZZ");
   
+  // Split time for blinking colon
+  const [hours, minutes] = timeString.split(':');
+  
   const getTimeOfDay = (hour: number) => {
     if (hour < 6) return "Late Night";
     if (hour < 12) return "Morning";
@@ -87,12 +90,17 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
             <MapPin className={cn("h-4 w-4", isPrimary ? "text-blue-500" : "text-gray-400")} />
             <h3 className="text-lg font-semibold">{timezone.city}, {timezone.country}</h3>
             {isPrimary && <Badge variant="secondary">Primary</Badge>}
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           </div>
           <p className="text-sm text-muted-foreground">{offsetString} • {dateString}</p>
         </div>
 
         <div className="text-center mb-6">
-          <div className="text-4xl font-mono font-bold mb-2">{timeString}</div>
+          <div className="text-4xl font-mono font-bold mb-2 flex items-center justify-center transition-all duration-300">
+            <span>{hours}</span>
+            <span className="blink mx-1">:</span>
+            <span>{minutes}</span>
+          </div>
           <div className="text-sm text-muted-foreground">
             {getTimeOfDay(localTime.hour)}
           </div>

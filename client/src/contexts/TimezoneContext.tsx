@@ -35,11 +35,17 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [referenceTime] = useState<DateTime>(DateTime.now());
   const [currentTime, setCurrentTime] = useState<DateTime>(DateTime.now());
 
-  // Update current time every second
+  // Update current time every second with precise timing
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTime = () => {
       setCurrentTime(DateTime.now());
-    }, 1000);
+    };
+    
+    // Update immediately
+    updateTime();
+    
+    // Then update every second
+    const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
