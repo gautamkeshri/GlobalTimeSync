@@ -15,7 +15,7 @@ interface TimezoneCardProps {
 }
 
 export function TimezoneCard({ timezone, currentTime, isPrimary = false }: TimezoneCardProps) {
-  const { removeTimezone, setPrimaryTimezone } = useTimezones();
+  const { removeTimezone, setPrimaryTimezone, timezones } = useTimezones();
 
   const localTime = currentTime.setZone(timezone.timezone);
   const timeString = localTime.toFormat("HH:mm");
@@ -34,12 +34,22 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
   };
 
   const getOffsetFromReference = (referenceTime: DateTime) => {
-    const reference = referenceTime.setZone("UTC");
-    const target = localTime.setZone("UTC");
-    const diff = target.offset - reference.offset;
-    const hours = Math.floor(Math.abs(diff) / 60);
-    const sign = diff >= 0 ? "+" : "-";
-    return `${sign}${hours} hours`;
+    // Use the user's local timezone as reference if no primary timezone is set
+    const primaryTimezone = timezones.find(tz => tz.isPrimary);
+    const referenceZone = primaryTimezone?.timezone || DateTime.now().zoneName;
+    
+    // Calculate the offset difference between this timezone and the reference
+    const referenceOffset = referenceTime.setZone(referenceZone).offset;
+    const targetOffset = localTime.offset;
+    const diffMinutes = targetOffset - referenceOffset;
+    const hours = Math.floor(Math.abs(diffMinutes) / 60);
+    const minutes = Math.abs(diffMinutes) % 60;
+    
+    if (diffMinutes === 0) return "Same time";
+    
+    const sign = diffMinutes >= 0 ? "+" : "-";
+    const timeString = minutes > 0 ? `${hours}:${minutes.toString().padStart(2, '0')}` : `${hours}`;
+    return `${sign}${timeString} hours`;
   };
 
   const getProgressPercentage = () => {
@@ -108,12 +118,14 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
 
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Offset from reference</span>
+            <span className="text-muted-foreground">
+              {isPrimary ? "Primary timezone" : "Time difference"}
+            </span>
             <span className={cn(
               "font-medium",
               isPrimary ? "text-blue-500" : "text-green-500"
             )}>
-              {getOffsetFromReference(currentTime)}
+              {isPrimary ? "Reference point" : getOffsetFromReference(currentTime)}
             </span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
