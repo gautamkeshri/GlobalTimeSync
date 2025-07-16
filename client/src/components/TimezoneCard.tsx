@@ -101,7 +101,7 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
             <h3 className="text-lg font-semibold">{timezone.city}, {timezone.country}</h3>
             {isPrimary && <Badge variant="secondary">Primary</Badge>}
             <div className={`w-2 h-2 rounded-full ${
-              !isManuallyAdjusted ? 'bg-green-500 animate-pulse' : 'bg-orange-500'
+              !isManuallyAdjusted ? 'bg-green-500 animate-pulse' : 'bg-amber-500'
             }`}></div>
           </div>
           <p className="text-sm text-muted-foreground">{offsetString} • {dateString}</p>

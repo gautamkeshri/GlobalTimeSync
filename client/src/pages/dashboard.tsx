@@ -87,7 +87,7 @@ export default function Dashboard() {
                     {isManuallyAdjusted ? "Manual mode" : "Live sync"}
                   </span>
                   <div className={`w-2 h-2 rounded-full ${
-                    isManuallyAdjusted ? "bg-orange-500" : "bg-green-500 animate-pulse"
+                    isManuallyAdjusted ? "bg-amber-500" : "bg-green-500 animate-pulse"
                   }`}></div>
                 </div>
               </div>
