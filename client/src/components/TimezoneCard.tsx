@@ -15,7 +15,7 @@ interface TimezoneCardProps {
 }
 
 export function TimezoneCard({ timezone, currentTime, isPrimary = false }: TimezoneCardProps) {
-  const { removeTimezone, setPrimaryTimezone, timezones } = useTimezones();
+  const { removeTimezone, setPrimaryTimezone, timezones, isManuallyAdjusted } = useTimezones();
 
   const localTime = currentTime.setZone(timezone.timezone);
   const timeString = localTime.toFormat("HH:mm");
@@ -100,7 +100,9 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
             <MapPin className={cn("h-4 w-4", isPrimary ? "text-blue-500" : "text-gray-400")} />
             <h3 className="text-lg font-semibold">{timezone.city}, {timezone.country}</h3>
             {isPrimary && <Badge variant="secondary">Primary</Badge>}
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <div className={`w-2 h-2 rounded-full ${
+              !isManuallyAdjusted ? 'bg-green-500 animate-pulse' : 'bg-orange-500'
+            }`}></div>
           </div>
           <p className="text-sm text-muted-foreground">{offsetString} • {dateString}</p>
         </div>
@@ -108,7 +110,7 @@ export function TimezoneCard({ timezone, currentTime, isPrimary = false }: Timez
         <div className="text-center mb-6">
           <div className="text-4xl font-mono font-bold mb-2 flex items-center justify-center transition-all duration-300">
             <span>{hours}</span>
-            <span className="blink mx-1">:</span>
+            <span className={`mx-1 ${!isManuallyAdjusted ? 'blink' : ''}`}>:</span>
             <span>{minutes}</span>
           </div>
           <div className="text-sm text-muted-foreground">
