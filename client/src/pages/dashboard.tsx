@@ -15,7 +15,7 @@ import { DateTime } from "luxon";
 export default function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const { timezones, currentTime, adjustedTime, updateTime, resetTime, isLoading } = useTimezones();
+  const { timezones, currentTime, adjustedTime, updateTime, resetTime, isLoading, isManuallyAdjusted } = useTimezones();
   const { theme, toggleTheme } = useTheme();
 
   const primaryTimezone = timezones.find(tz => tz.isPrimary);
@@ -83,8 +83,12 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Time Synchronization</h3>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">Live sync</span>
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-muted-foreground">
+                    {isManuallyAdjusted ? "Manual mode" : "Live sync"}
+                  </span>
+                  <div className={`w-2 h-2 rounded-full ${
+                    isManuallyAdjusted ? "bg-orange-500" : "bg-green-500 animate-pulse"
+                  }`}></div>
                 </div>
               </div>
               

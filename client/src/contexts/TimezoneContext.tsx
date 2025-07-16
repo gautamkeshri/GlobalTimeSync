@@ -16,6 +16,7 @@ interface TimezoneContextType {
   resetTime: () => void;
   setPrimaryTimezone: (id: number) => void;
   isLoading: boolean;
+  isManuallyAdjusted: boolean;
 }
 
 const TimezoneContext = createContext<TimezoneContextType | undefined>(undefined);
@@ -34,6 +35,7 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [adjustedTime, setAdjustedTime] = useState<DateTime>(DateTime.now());
   const [referenceTime] = useState<DateTime>(DateTime.now());
   const [currentTime, setCurrentTime] = useState<DateTime>(DateTime.now());
+  const [isManuallyAdjusted, setIsManuallyAdjusted] = useState<boolean>(false);
 
   // Update current time every second with precise timing
   useEffect(() => {
@@ -48,6 +50,13 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-sync adjusted time with current time when not manually adjusted
+  useEffect(() => {
+    if (!isManuallyAdjusted) {
+      setAdjustedTime(currentTime);
+    }
+  }, [currentTime, isManuallyAdjusted]);
 
   // Fetch user timezones
   const { data: timezones = [], isLoading } = useQuery({
@@ -90,10 +99,12 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
 
   const updateTime = (time: DateTime) => {
     setAdjustedTime(time);
+    setIsManuallyAdjusted(true);
   };
 
   const resetTime = () => {
     setAdjustedTime(DateTime.now());
+    setIsManuallyAdjusted(false);
   };
 
   const setPrimaryTimezone = (id: number) => {
@@ -113,6 +124,7 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
         resetTime,
         setPrimaryTimezone,
         isLoading,
+        isManuallyAdjusted,
       }}
     >
       {children}
