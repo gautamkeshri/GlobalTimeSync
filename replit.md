@@ -8,6 +8,15 @@ TimeSync is a full-stack web application that helps users manage and synchronize
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### January 16, 2025
+- **Enhanced Timezone Selection**: Implemented country suggestions feature with searchable dropdown
+- **Expanded Timezone Database**: Added 70+ cities across all continents with proper GMT offsets
+- **Improved Search Interface**: Added Command + Popover components for better timezone discovery
+- **UI Format Enhancement**: Country suggestions now display as "Country — City" with GMT offset below
+- **Cross-env Dependency**: Fixed missing cross-env package for proper environment variable handling
+
 ## System Architecture
 
 ### Frontend Architecture
